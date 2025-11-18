@@ -15,6 +15,10 @@ import paramiko
 TARGET_IPS = ["8.8.8.8", "1.1.1.1"]
 # An integer representing the number of pings to send.
 PING_COUNT = 10
+# Default username for SSH connections to all devices.
+DEVICE_USERNAME = "your_username"
+# Default password for SSH connections to all devices.
+DEVICE_PASSWORD = "your_password"
 
 def get_devices_from_file(filename="devices.txt"):
     """
@@ -31,8 +35,8 @@ def get_devices_from_file(filename="devices.txt"):
         for line in f:
             devices.append({
                 "host": line.strip(),
-                "username": "your_username",
-                "password": "your_password",
+                "username": DEVICE_USERNAME,
+                "password": DEVICE_PASSWORD,
             })
     return devices
 
