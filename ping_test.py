@@ -27,10 +27,21 @@ DEVICES = [
     # },
 ]
 
-# A list of strings, where each string is an IP address to ping.
-TARGET_IPS = ["8.8.8.8", "1.1.1.1"]
 # An integer representing the number of pings to send.
 PING_COUNT = 10
+
+def get_ips_from_file(filename="ips.txt"):
+    """
+    Reads a list of IP addresses from a file.
+
+    Args:
+        filename (str): The name of the file to read from.
+
+    Returns:
+        list: A list of IP addresses.
+    """
+    with open(filename, "r") as f:
+        return [line.strip() for line in f]
 
 def get_ping_average(ssh_client, target_ip, count=10):
     """
@@ -68,6 +79,8 @@ def main():
     It iterates through the configured devices, establishes an SSH connection,
     and then runs ping tests for each target IP. It prints the results to the console.
     """
+    target_ips = get_ips_from_file()
+
     for device in DEVICES:
         try:
             with paramiko.SSHClient() as ssh:
@@ -82,7 +95,7 @@ def main():
                 )
                 print(f"--- Successfully connected to {device['host']} ---")
 
-                for ip in TARGET_IPS:
+                for ip in target_ips:
                     print(f"Pinging {ip}...")
                     average_ping = get_ping_average(ssh, ip, PING_COUNT)
 
