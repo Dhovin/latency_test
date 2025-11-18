@@ -1,10 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+This script automates network latency tests by connecting to one or more remote devices
+via SSH, executing ping commands to specified target IP addresses, and calculating the
+average round-trip time.
+"""
+
 import re
 import paramiko
 
 # To install the required library, run: pip install paramiko
 
 # --- Configuration ---
-# Replace with your device information
+# A list of dictionaries, where each dictionary represents a device to connect to.
+# Replace with your device information.
 DEVICES = [
     {
         "host": "your_device_ip_1",
@@ -19,13 +27,22 @@ DEVICES = [
     # },
 ]
 
-# Replace with the IP addresses you want to ping
+# A list of strings, where each string is an IP address to ping.
 TARGET_IPS = ["8.8.8.8", "1.1.1.1"]
+# An integer representing the number of pings to send.
 PING_COUNT = 10
 
 def get_ping_average(ssh_client, target_ip, count=10):
     """
     Executes the ping command on the remote device and calculates the average round-trip time.
+
+    Args:
+        ssh_client (paramiko.SSHClient): The SSH client connected to the remote device.
+        target_ip (str): The IP address to ping.
+        count (int): The number of pings to send.
+
+    Returns:
+        float: The average round-trip time in milliseconds, or None if it cannot be determined.
     """
     stdin, stdout, stderr = ssh_client.exec_command(f"ping {target_ip} repeat {count}")
     output = stdout.read().decode("utf-8")
@@ -47,6 +64,9 @@ def get_ping_average(ssh_client, target_ip, count=10):
 def main():
     """
     Main function to connect to devices and run ping tests.
+    
+    It iterates through the configured devices, establishes an SSH connection,
+    and then runs ping tests for each target IP. It prints the results to the console.
     """
     for device in DEVICES:
         try:
