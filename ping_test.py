@@ -11,37 +11,30 @@ import paramiko
 # To install the required library, run: pip install paramiko
 
 # --- Configuration ---
-# A list of dictionaries, where each dictionary represents a device to connect to.
-# Replace with your device information.
-DEVICES = [
-    {
-        "host": "your_device_ip_1",
-        "username": "your_username",
-        "password": "your_password",
-    },
-    # Add more devices as needed
-    # {
-    #     "host": "your_device_ip_2",
-    #     "username": "your_username",
-    #     "password": "your_password",
-    # },
-]
-
+# A list of IP addresses to ping.
+TARGET_IPS = ["8.8.8.8", "1.1.1.1"]
 # An integer representing the number of pings to send.
 PING_COUNT = 10
 
-def get_ips_from_file(filename="ips.txt"):
+def get_devices_from_file(filename="devices.txt"):
     """
-    Reads a list of IP addresses from a file.
+    Reads a list of device IP addresses from a file and returns a list of device dictionaries.
 
     Args:
         filename (str): The name of the file to read from.
 
     Returns:
-        list: A list of IP addresses.
+        list: A list of device dictionaries.
     """
+    devices = []
     with open(filename, "r") as f:
-        return [line.strip() for line in f]
+        for line in f:
+            devices.append({
+                "host": line.strip(),
+                "username": "your_username",
+                "password": "your_password",
+            })
+    return devices
 
 def get_ping_average(ssh_client, target_ip, count=10):
     """
@@ -79,9 +72,9 @@ def main():
     It iterates through the configured devices, establishes an SSH connection,
     and then runs ping tests for each target IP. It prints the results to the console.
     """
-    target_ips = get_ips_from_file()
+    devices = get_devices_from_file()
 
-    for device in DEVICES:
+    for device in devices:
         try:
             with paramiko.SSHClient() as ssh:
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -95,7 +88,7 @@ def main():
                 )
                 print(f"--- Successfully connected to {device['host']} ---")
 
-                for ip in target_ips:
+                for ip in TARGET_IPS:
                     print(f"Pinging {ip}...")
                     average_ping = get_ping_average(ssh, ip, PING_COUNT)
 
