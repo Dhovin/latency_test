@@ -21,11 +21,22 @@ pip install paramiko
 
 **2. Configure the Script:**
 
-Edit `ping_test.py` to include your device information and the target IPs you want to test.
+This script requires two configuration files/sections:
 
-*   `DEVICES`: A list of dictionaries, where each dictionary represents a device with its `host`, `username`, and `password`.
-*   `TARGET_IPS`: A list of strings, where each string is an IP address to ping.
-*   `PING_COUNT`: An integer representing the number of pings to send.
+*   **`devices.txt`**: Create a file named `devices.txt` in the same directory as `ping_test.py`. Each line in this file should contain the IP address or hostname of a device you want to SSH into.
+
+    Example `devices.txt`:
+    ```
+    192.168.1.1
+    192.168.1.2
+    my_router.local
+    ```
+
+*   **`ping_test.py`**: Edit `ping_test.py` to set the common SSH credentials and ping parameters.
+    *   `DEVICE_USERNAME`: Your SSH username for all devices.
+    *   `DEVICE_PASSWORD`: Your SSH password for all devices.
+    *   `TARGET_IPS`: A list of strings, where each string is an IP address to ping (e.g., `["8.8.8.8", "1.1.1.1"]`).
+    *   `PING_COUNT`: An integer representing the number of pings to send.
 
 **3. Run the Script:**
 
@@ -35,7 +46,7 @@ Execute the script from your terminal:
 python ping_test.py
 ```
 
-The script will then connect to each device, run the ping tests, and print the average latency for each target IP.
+The script will then connect to each device listed in `devices.txt`, run the ping tests to `TARGET_IPS`, and print the average latency for each target IP.
 
 # Development Conventions
 
